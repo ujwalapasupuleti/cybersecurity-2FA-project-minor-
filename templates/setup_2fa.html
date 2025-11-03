@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA Setup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        input:focus { @apply ring-0 border-indigo-500; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-lg bg-white p-8 shadow-xl rounded-2xl border border-gray-100 text-center">
+        
+        <h1 class="text-3xl font-light text-gray-800 mb-1">
+            Activate Two-Factor Authentication
+        </h1>
+        <p class="text-sm text-gray-500 mb-8">
+            Securing account for: <span class="font-semibold text-indigo-600">{{ username }}</span>
+        </p>
+
+        {% if error %}
+        <div class="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-md mb-6 text-left" role="alert">
+            <p class="text-sm font-medium">{{ error }}</p>
+        </div>
+        {% endif %}
+
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+            <h2 class="text-xl font-medium text-gray-700 mb-4">Step 1: Scan the Code</h2>
+            <ol class="list-decimal list-inside space-y-2 text-sm text-gray-600 mb-6 max-w-xs mx-auto text-left">
+                <li>Download an authenticator app.</li>
+                <li>Scan the code below to add this account.</li>
+            </ol>
+            
+            <div class="flex justify-center my-6">
+                <img src="data:image/png;base64,{{ qr_code_data }}" alt="QR Code for 2FA Setup" 
+                     class="p-2 bg-white shadow-lg rounded-xl w-40 h-40 object-contain border border-indigo-200">
+            </div>
+        </div>
+
+        <div class="p-6 bg-white rounded-lg border border-gray-200">
+            <h2 class="text-xl font-medium text-gray-700 mb-4">Step 2: Confirm Verification</h2>
+            
+            <form method="POST" action="/verify_setup" class="space-y-4">
+                <input type="hidden" name="username" value="{{ username }}">
+                <div class="pt-2">
+                    <label for="otp_setup" class="block text-sm font-light text-gray-500 mb-1">Enter the 6-digit code from your app</label>
+                    <input type="text" id="otp_setup" name="otp_code" maxlength="6" pattern="\d{6}" required placeholder="••••••"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-center tracking-widest text-xl transition duration-150">
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-150 font-medium shadow-md">
+                    Verify & Finish Setup
+                </button>
+            </form>
+        </div>
+        
+    </div>
+</body>
+</html>
